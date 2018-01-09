@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace Web.Models
 {
     public class Trade
@@ -6,5 +7,15 @@ namespace Web.Models
         public Trade()
         {
         }
+        public enum TradeTypeEnum
+        {
+            Buy,
+            Sell
+        }
+        [Key]
+        public int TradeID { get; set; }
+        public TradeTypeEnum TradeType { get; set; }
+        public string TradeCurrency { get; set; }
+        public string TradeCurrencyBasePai { get; set; }
     }
 }
