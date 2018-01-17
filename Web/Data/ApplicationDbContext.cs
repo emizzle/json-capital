@@ -21,6 +21,6 @@ namespace TestIdentity.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        public DbSet<Trade> Trade { get; set; }
+        public DbSet<Trade> Trades { get; set; }
     }
 }

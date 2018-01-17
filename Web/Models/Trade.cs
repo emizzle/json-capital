@@ -16,6 +16,6 @@ namespace Web.Models
         public int TradeID { get; set; }
         public TradeTypeEnum TradeType { get; set; }
         public string TradeCurrency { get; set; }
-        public string TradeCurrencyBasePai { get; set; }
+        public string TradeCurrencyBasePair { get; set; }
     }
 }

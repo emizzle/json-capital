@@ -187,13 +187,13 @@ namespace TestIdentity.Data.Migrations
 
                     b.Property<string>("TradeCurrency");
 
-                    b.Property<string>("TradeCurrencyBasePai");
+                    b.Property<string>("TradeCurrencyBasePair");
 
                     b.Property<int>("TradeType");
 
                     b.HasKey("TradeID");
 
-                    b.ToTable("Trade");
+                    b.ToTable("Trades");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
