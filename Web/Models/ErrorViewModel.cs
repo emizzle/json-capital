@@ -1,6 +1,6 @@
 using System;
 
-namespace TestIdentity.Models
+namespace JSONCapital.Web.Models
 {
     public class ErrorViewModel
     {

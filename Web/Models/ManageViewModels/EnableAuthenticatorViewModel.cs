@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TestIdentity.Models.ManageViewModels
+namespace JSONCapital.Web.Models.ManageViewModels
 {
     public class EnableAuthenticatorViewModel
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace TestIdentity.Models.ManageViewModels
+namespace JSONCapital.Web.Models.ManageViewModels
 {
     public class ExternalLoginsViewModel
     {

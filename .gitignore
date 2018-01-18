@@ -235,3 +235,5 @@ _Pvt_Extensions
 .fake/
 
 **/wwwroot/lib
+WebJob.CoinTracking/appsettings.secrets.json
+WebJob.CoinTracking/appsettings.Development.secrets.json

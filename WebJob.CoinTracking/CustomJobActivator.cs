@@ -2,7 +2,7 @@
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WebJob.CoinTracking
+namespace JSONCapital.WebJob.CoinTracking
 {
     public class CustomJobActivator : IJobActivator
     {

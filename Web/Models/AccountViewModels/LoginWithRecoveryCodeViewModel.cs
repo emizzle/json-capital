@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TestIdentity.Models.AccountViewModels
+namespace JSONCapital.Web.Models.AccountViewModels
 {
     public class LoginWithRecoveryCodeViewModel
     {

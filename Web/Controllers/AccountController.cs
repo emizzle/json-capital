@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using JSONCapital.Data.Models;
+using JSONCapital.Web.Models.AccountViewModels;
+using JSONCapital.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using TestIdentity.Models;
-using TestIdentity.Models.AccountViewModels;
-using TestIdentity.Services;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace TestIdentity.Controllers
+namespace JSONCapital.Web.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]

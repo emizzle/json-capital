@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JSONCapital.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using TestIdentity.Models;
+using System.Diagnostics;
 
-namespace TestIdentity.Controllers
+namespace JSONCapital.Web.Controllers
 {
     public class HomeController : Controller
     {

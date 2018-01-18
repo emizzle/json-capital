@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JSONCapital.Data;
+using JSONCapital.Data.Models;
+using JSONCapital.Web.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TestIdentity.Data;
-using TestIdentity.Models;
-using TestIdentity.Services;
-using Microsoft.Extensions.Logging;
+using System;
 
-namespace TestIdentity
+namespace JSONCapital.Web
 {
     public class Startup
     {

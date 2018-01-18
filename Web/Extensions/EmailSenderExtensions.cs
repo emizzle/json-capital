@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using TestIdentity.Services;
 
-namespace TestIdentity.Services
+namespace JSONCapital.Web.Services
 {
     public static class EmailSenderExtensions
     {

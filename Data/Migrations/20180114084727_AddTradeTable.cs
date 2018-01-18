@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
-namespace TestIdentity.Data.Migrations
+namespace JSONCapital.Data.Migrations
 {
     public partial class AddTradeTable : Migration
     {
