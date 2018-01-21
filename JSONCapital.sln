@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{70F7B6B1-441B-46BF-9D2D-C3EA88794E4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{70F7B6B1-441B-46BF-9D2D-C3EA88794E4B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{09F6D8FD-D16F-4035-8763-DA1415F01818} = {09F6D8FD-D16F-4035-8763-DA1415F01818}
 	EndProjectSection
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{015992B4-DFD2-4CC8-B45A-64D4D5BA4DA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebJob.CoinTracking", "WebJob.CoinTracking\WebJob.CoinTracking.csproj", "{21F16F10-3F09-4A3B-A868-5843AC5FF055}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebJob.CoinTracking", "WebJob.CoinTracking\WebJob.CoinTracking.csproj", "{21F16F10-3F09-4A3B-A868-5843AC5FF055}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +41,45 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F0C4D0E-EDB3-461B-9111-25C3FDDAC772}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.TextStylePolicy = $2
+		$2.inheritsSet = null
+		$2.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $3
+		$3.scope = text/x-csharp
+		$0.TextStylePolicy = $4
+		$4.FileWidth = 80
+		$4.TabsToSpaces = True
+		$4.scope = text/plain
+		$0.TextStylePolicy = $5
+		$5.inheritsSet = null
+		$5.scope = text/x-json
+		$0.JSONFormattingPolicy = $6
+		$6.AutoStructureCompletion = True
+		$6.BracePositions = SemiExpanded
+		$6.FormatOnPaste = True
+		$6.scope = text/x-json
+		$0.TextStylePolicy = $7
+		$7.inheritsSet = null
+		$7.scope = text/x-css
+		$0.CSSFormattingPolicy = $8
+		$8.AutomaticFormatting = True
+		$8.BracePositions = SemiExpanded
+		$8.FormatOnPaste = True
+		$8.HierarchicalIndentation = True
+		$8.scope = text/x-css
+		$0.TextStylePolicy = $9
+		$9.inheritsSet = null
+		$9.scope = text/x-html
+		$0.HTMLFormattingPolicy = $10
+		$10.FormatOnPaste = True
+		$10.XHTMLCodingStyle = True
+		$10.scope = text/x-html
+		$0.StandardHeader = $11
+		$0.VersionControlPolicy = $12
 	EndGlobalSection
 EndGlobal

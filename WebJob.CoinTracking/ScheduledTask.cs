@@ -18,7 +18,7 @@ namespace JSONCapital.WebJob.CoinTracking
             _dbContext = dbContext;
         }
 
-        public async Task DownloadTrades([TimerTrigger("0 0 * * * *", RunOnStartup = false)] TimerInfo timerInfo, TextWriter log)
+        public async Task DownloadTrades([TimerTrigger("0 0 * * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation(LoggingEvents.InformationalMarker, "Download trades has fired");
         }
