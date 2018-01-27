@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using JSONCapital.Common.Options;
 using JSONCapital.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
@@ -71,6 +72,7 @@ namespace JSONCapital.WebJob.CoinTracking
 
             // option pattern
             serviceCollection.Configure<ConnectionStringsOptions>(_Configuration.GetSection("ConnectionStrings"));
+            serviceCollection.Configure<CoinTrackingOptions>(_Configuration.GetSection("CoinTracking"));
 
             //serviceCollection.AddScoped<ISomeInterface, SomeUsefulClass>();
             // Your classes that contain the webjob methods need to be DI-ed up too

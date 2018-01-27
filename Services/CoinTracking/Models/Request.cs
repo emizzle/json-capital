@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using JSONCapital.Common.Extensions;
 using JSONCapital.Common.Options;
 using Microsoft.Extensions.Options;
 using Services.Helpers;
@@ -12,7 +13,7 @@ namespace Services.CoinTracking.Models
     public abstract class Request : IRequest
     {
         private readonly IOptions<CoinTrackingOptions> _options;
-        private string mSign = null;
+        protected string mSign = null;
         private IEnumerable<KeyValuePair<string, object>> mSignableProperties = null;
 
         public Request(IOptions<CoinTrackingOptions> options)
@@ -52,7 +53,7 @@ namespace Services.CoinTracking.Models
                         sb.AppendFormat("{0}={1}&", signableProp.Key.ToLower(), signableProp.Value.ToString().ToLower());
                     }
 
-                    mSign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, sb.ToString());
+                    mSign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, sb.ToString().TrimEnd('&'));
                 }
                 return mSign;
             }
@@ -64,9 +65,24 @@ namespace Services.CoinTracking.Models
             {
                 if (mSignableProperties == null)
                 {
-                    mSignableProperties = this.GetType().GetProperties()
-                                              .Where(prop => Attribute.IsDefined(prop, typeof(SignablePropertyAttribute)))
-                                              .Select(prop => new KeyValuePair<string, object>(prop.Name, prop.GetValue(this)));
+                    var lstProps = new List<KeyValuePair<string, object>>();
+                    var props = this.GetType().GetProperties()
+                                    .Where(prop => Attribute.IsDefined(prop, typeof(SignablePropertyAttribute)));
+
+                    foreach (var prop in props)
+                    {
+                        var propVal = prop.GetValue(this);
+                        var propType = prop.GetType();
+                        if (propType.IsAssignableFrom(typeof(DateTime?)))
+                        {
+                            propVal = ((DateTime?)propVal).UnixTimestampFromDateTime();
+                        }
+                        if (propVal != null && !propVal.HasDefaultValue())//, default(prop.GetType()))// propVal.Equals(default(typeof(propType)))
+                        {
+                            lstProps.Add(new KeyValuePair<string, object>(prop.Name, propVal));
+                        }
+                    }
+                    mSignableProperties = lstProps;
                 }
                 return mSignableProperties;
             }

@@ -9,9 +9,14 @@
         public const int UpdateItem = 1004;
         public const int DeleteItem = 1005;
 
+		public const int InformationalMarker = 2000;
+
+        public const int WebRequest = 3000;
+        public const int WebRequestSuccess = 3001;
+        public const int WebRequestError = 3002;
+
         public const int GetItemNotFound = 4000;
         public const int UpdateItemNotFound = 4001;
 
-        public const int InformationalMarker = 2000;
     }
 }

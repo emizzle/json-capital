@@ -9,6 +9,11 @@ namespace Services.CoinTracking.Models
     /// </summary>
     public class GetTradesRequest : Request
     {
+        private int mLimit;
+        private OrderDirection mOrder;
+        private DateTime? mTradeStartDate;
+        private DateTime? mTradeEndDate;
+
         public GetTradesRequest(IOptions<CoinTrackingOptions> options) : base(options)
         {
 
@@ -35,27 +40,71 @@ namespace Services.CoinTracking.Models
         /// </summary>
         /// <value>The limit.</value>
         [SignableProperty]
-        public int Limit { get; set; }
+        public int Limit
+        {
+            get
+            {
+                return mLimit;
+            }
+            set
+            {
+                mLimit = value;
+                this.mSign = null;
+            }
+        }
 
         /// <summary>
         /// ASC or DESC order by trade time
         /// </summary>
         /// <value>The order.</value>
         [SignableProperty]
-        public OrderDirection Order { get; set; }
+        public OrderDirection Order
+        {
+            get
+            {
+                return mOrder;
+            }
+            set
+            {
+                mOrder = value;
+                this.mSign = null;
+            }
+        }
 
         /// <summary>
         /// timestamp as trade start date
         /// </summary>
         /// <value>The trade start date.</value>
         [SignableProperty]
-        public DateTime TradeStartDate { get; set; }
+        public DateTime? TradeStartDate
+        {
+            get
+            {
+                return mTradeStartDate;
+            }
+            set
+            {
+                mTradeStartDate = value;
+                this.mSign = null;
+            }
+        }
 
         /// <summary>
         /// timestamp as trade end date
         /// </summary>
         /// <value>The trade end date.</value>
         [SignableProperty]
-        public DateTime TradeEndDate { get; set; }
+        public DateTime? TradeEndDate
+        {
+            get
+            {
+                return mTradeEndDate;
+            }
+            set
+            {
+                mTradeEndDate = value;
+                this.mSign = null;
+            }
+        }
     }
 }

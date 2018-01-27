@@ -12,6 +12,8 @@ using JSONCapital.Common.Options;
 using System.Collections.Generic;
 using Services.CoinTracking.Models;
 using System.Linq;
+using JSONCapital.Data.Models;
+using JSONCapital.Common.Extensions;
 
 namespace JSONCapital.WebJob.CoinTracking
 {
@@ -24,9 +26,9 @@ namespace JSONCapital.WebJob.CoinTracking
         private readonly GetTradesRequest _getTradesRequest;
 
         public ScheduledTask(
-            ILogger<ScheduledTask> logger, 
-            ApplicationDbContext dbContext, 
-            IHostingEnvironment env, 
+            ILogger<ScheduledTask> logger,
+            ApplicationDbContext dbContext,
+            IHostingEnvironment env,
             IOptions<CoinTrackingOptions> options,
             GetTradesRequest getTradesRequest)
         {
@@ -40,16 +42,57 @@ namespace JSONCapital.WebJob.CoinTracking
         public async Task DownloadTrades([TimerTrigger("0 0 * * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            log.WriteLine("Download trades has fired");
-            _logger.LogInformation(LoggingEvents.InformationalMarker, "Download trades has fired");
+            log.WriteLine("Download trades scheduled task has triggered.");
+            _logger.LogInformation(LoggingEvents.InformationalMarker, "Download trades scheduled task has triggered.");
 
             using (var httpClient = new HttpClient())
             {
-                var nvc = new List<KeyValuePair<string, string>>(
-                    _getTradesRequest.SignableProperties.Select(prop => new KeyValuePair<string, string>(prop.Key, prop.Value.ToString()))
-                );
-                var req = new HttpRequestMessage(HttpMethod.Post, _options.Value.ApiEndpoint) { Content = new FormUrlEncodedContent(nvc) };
-                var response = await httpClient.SendAsync(req);
+                var formDataContent = new MultipartFormDataContent();
+                foreach (var signableProp in _getTradesRequest.SignableProperties)
+                {
+                    formDataContent.Add(new StringContent(signableProp.Value.ToString()), signableProp.Key);
+                }
+                var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.ApiEndpoint) { Content = formDataContent };
+                request.Headers.Add("Key", _getTradesRequest.Key);
+                request.Headers.Add("Sign", _getTradesRequest.Sign);
+
+                var response = httpClient.SendAsync(request).Result;
+
+                try
+                {
+                    await log.WriteLineAsync("API request for trade data sent.");
+                    _logger.LogInformation(LoggingEvents.WebRequest, null, "API request for trade data sent.");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+						var responseTyped = response.Content.ReadAsAsync<GetTradesResponse>().Result;
+
+                        if (responseTyped != null && responseTyped.Success)
+                        {
+                            await log.WriteLineAsync("Received a successful trade data response.");
+                            _logger.LogInformation(LoggingEvents.WebRequest, null, "Received a successful trade data response.");
+
+                            // persist trade data in DB
+
+                        }
+                    }
+                    else
+                    {
+                        
+						Console.ForegroundColor = ConsoleColor.Red;
+                        var logMsg = $"Error downloading trades ({response.StatusCode} - {response.ReasonPhrase}): {response.Content.ReadAsStringAsync().Result}";
+                        await log.WriteLineAsync(logMsg);
+                        _logger.LogCritical(LoggingEvents.WebRequestError, logMsg);
+                    }
+                }
+                catch (AggregateException aggregateException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    var aggEx = aggregateException.Flatten();
+                    var logMsg = $"Error downloading trades, {aggEx.Message}: {aggEx.StackTrace}";
+                    await log.WriteLineAsync(logMsg);
+                    _logger.LogCritical(LoggingEvents.WebRequestError, logMsg);
+                }
             }
         }
 
