@@ -6,4 +6,7 @@
     <RootNamespace>JSONCapital.Common</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Options\" />
+  </ItemGroup>
 </Project>

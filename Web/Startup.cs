@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using JSONCapital.Common.Options;
 
 namespace JSONCapital.Web
 {
@@ -23,6 +24,9 @@ namespace JSONCapital.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // populate our app settings
+            services.Configure<JSONCapitalOptions>(Configuration);
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -64,6 +68,8 @@ namespace JSONCapital.Web
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.Configure<CoinTrackingOptions>(Configuration.GetSection("CoinTracking"));
 
             services.AddMvc();
         }

@@ -3,20 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>JSONCapital.WebJob.CoinTracking-35D6DE51-A385-4030-B17E-4130A918FC56</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="appsettings.secrets.json" />
     <None Remove="appsettings.Development.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.Development.secrets.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="appsettings.secrets.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="appsettings.Development.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -34,9 +31,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\Web\Web.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 </Project>

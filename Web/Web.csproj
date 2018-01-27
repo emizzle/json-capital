@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <UserSecretsId>aspnet-TestIdentity-35D6DE51-A385-4030-B17E-4130A918FC56</UserSecretsId>
+    <UserSecretsId>JSONCapital.Web-35D6DE51-A385-4030-B17E-4130A918FC56</UserSecretsId>
     <AssemblyName>JSONCapital.Web</AssemblyName>
     <RootNamespace>JSONCapital.Web</RootNamespace>
   </PropertyGroup>
@@ -28,6 +28,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="New Folder\" />
   </ItemGroup>
     <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
       <Exec Command="bower install" />
