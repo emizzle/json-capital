@@ -43,18 +43,36 @@ namespace JSONCapital.WebJob.CoinTracking
         {
             Console.ForegroundColor = ConsoleColor.Green;
             log.WriteLine("Download trades scheduled task has triggered.");
-            _logger.LogInformation(LoggingEvents.InformationalMarker, "Download trades scheduled task has triggered.");
+            _logger.LogDebug("Download trades scheduled task has triggered.");
 
             using (var httpClient = new HttpClient())
             {
+                var logMsg = "Sending CoinTracking API GetTrades request with following data:";
+                //_logger.LogDebug(logMsg);
+                await log.WriteLineAsync(logMsg);
+
                 var formDataContent = new MultipartFormDataContent();
                 foreach (var signableProp in _getTradesRequest.SignableProperties)
                 {
-                    formDataContent.Add(new StringContent(signableProp.Value.ToString()), signableProp.Key);
+                    var key = signableProp.Key.ToLower();
+                    var val = signableProp.Value.ToString();
+                    formDataContent.Add(new StringContent(val), key);
+
+                    // log kvps that are being sent in request body
+                    //_logger.LogDebug($"{key}: {val}");
+                    await log.WriteLineAsync($"{key}: {val}");
                 }
                 var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.ApiEndpoint) { Content = formDataContent };
                 request.Headers.Add("Key", _getTradesRequest.Key);
                 request.Headers.Add("Sign", _getTradesRequest.Sign);
+
+                // log header vals
+                //_logger.LogDebug($"Key: {_getTradesRequest.Key}");
+                //_logger.LogDebug($"Sign: {_getTradesRequest.Sign}");
+                await log.WriteLineAsync($"Key: {_getTradesRequest.Key}");
+                await log.WriteLineAsync($"Sign: {_getTradesRequest.Sign}");
+
+
 
                 var response = httpClient.SendAsync(request).Result;
 
@@ -65,7 +83,7 @@ namespace JSONCapital.WebJob.CoinTracking
 
                     if (response.IsSuccessStatusCode)
                     {
-						var responseTyped = response.Content.ReadAsAsync<GetTradesResponse>().Result;
+                        var responseTyped = response.Content.ReadAsAsync<GetTradesResponse>().Result;
 
                         if (responseTyped != null && responseTyped.Success)
                         {
@@ -75,12 +93,19 @@ namespace JSONCapital.WebJob.CoinTracking
                             // persist trade data in DB
 
                         }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            logMsg = $"Error downloading trades ({response.StatusCode} - {response.ReasonPhrase}): {responseTyped?.Error} - {responseTyped?.ErrorMessage}";
+                            await log.WriteLineAsync(logMsg);
+                            _logger.LogCritical(LoggingEvents.WebRequestError, logMsg);
+                        }
                     }
                     else
                     {
-                        
-						Console.ForegroundColor = ConsoleColor.Red;
-                        var logMsg = $"Error downloading trades ({response.StatusCode} - {response.ReasonPhrase}): {response.Content.ReadAsStringAsync().Result}";
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        logMsg = $"Error downloading trades ({response.StatusCode} - {response.ReasonPhrase}): {response.Content.ReadAsStringAsync().Result}";
                         await log.WriteLineAsync(logMsg);
                         _logger.LogCritical(LoggingEvents.WebRequestError, logMsg);
                     }
@@ -89,7 +114,7 @@ namespace JSONCapital.WebJob.CoinTracking
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     var aggEx = aggregateException.Flatten();
-                    var logMsg = $"Error downloading trades, {aggEx.Message}: {aggEx.StackTrace}";
+                    logMsg = $"Error downloading trades, {aggEx.Message}: {aggEx.StackTrace}";
                     await log.WriteLineAsync(logMsg);
                     _logger.LogCritical(LoggingEvents.WebRequestError, logMsg);
                 }

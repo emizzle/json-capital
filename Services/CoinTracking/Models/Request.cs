@@ -30,6 +30,7 @@ namespace Services.CoinTracking.Models
             }
         }
 
+        [SignableProperty]
         public virtual string Method => "not implemented";
 
         public string Key
