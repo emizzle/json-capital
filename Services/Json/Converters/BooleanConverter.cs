@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Services.Json.Converters
+namespace JSONCapital.Services.Json.Converters
 {
     /// <summary>
     /// Handles converting JSON string values into a C# boolean data type.

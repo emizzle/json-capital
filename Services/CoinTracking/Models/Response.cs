@@ -1,8 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Services.Json.Converters;
+using JSONCapital.Services.Json.Converters;
 
-namespace Services.CoinTracking.Models
+namespace JSONCapital.Services.CoinTracking.Models
 {
     public class Response
     {

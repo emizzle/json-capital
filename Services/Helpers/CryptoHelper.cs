@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 //using Org.BouncyCastle.Crypto.Digests;
 //using Org.BouncyCastle.Crypto.Parameters;
 
-namespace Services.Helpers
+namespace JSONCapital.Services.Helpers
 {
     public class CryptoHelper
     {

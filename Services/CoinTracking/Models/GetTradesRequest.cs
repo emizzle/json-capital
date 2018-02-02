@@ -1,8 +1,9 @@
 ﻿using System;
 using JSONCapital.Common.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Services.CoinTracking.Models
+namespace JSONCapital.Services.CoinTracking.Models
 {
     /// <summary>
     /// Model for populating a "getTrades" request for the CoinTracking.info API.
@@ -13,10 +14,11 @@ namespace Services.CoinTracking.Models
         private OrderDirection mOrder;
         private DateTime? mTradeStartDate;
         private DateTime? mTradeEndDate;
+        private readonly ILogger _logger;
 
-        public GetTradesRequest(IOptions<CoinTrackingOptions> options) : base(options)
+        public GetTradesRequest(ILogger<Request> logger, IOptions<CoinTrackingOptions> options) : base(logger, options)
         {
-
+            _logger = logger;
         }
 
         /// <summary>
@@ -29,14 +31,14 @@ namespace Services.CoinTracking.Models
         }
 
         /// <summary>
-        /// CoinTracking.info API method to call
+        /// Gets the CoinTracking.info API method to call
         /// </summary>
         /// <value>The method.</value>
         [SignableProperty]
         public override string Method => "getTrades";
 
         /// <summary>
-        /// Number of trades
+        /// Gets or sets the number of trades
         /// </summary>
         /// <value>The limit.</value>
         [SignableProperty]
@@ -50,11 +52,12 @@ namespace Services.CoinTracking.Models
             {
                 mLimit = value;
                 this.mSign = null;
+                this.mSignableProperties = null;
             }
         }
 
         /// <summary>
-        /// ASC or DESC order by trade time
+        /// Gets or sets the ASC or DESC order by trade time
         /// </summary>
         /// <value>The order.</value>
         [SignableProperty]
@@ -68,11 +71,12 @@ namespace Services.CoinTracking.Models
             {
                 mOrder = value;
                 this.mSign = null;
+                this.mSignableProperties = null;
             }
         }
 
         /// <summary>
-        /// timestamp as trade start date
+        /// Gets or sets the timestamp as trade start date
         /// </summary>
         /// <value>The trade start date.</value>
         [SignableProperty]
@@ -86,11 +90,12 @@ namespace Services.CoinTracking.Models
             {
                 mTradeStartDate = value;
                 this.mSign = null;
+                this.mSignableProperties = null;
             }
         }
 
         /// <summary>
-        /// timestamp as trade end date
+        /// Gets or sets the timestamp as trade end date
         /// </summary>
         /// <value>The trade end date.</value>
         [SignableProperty]
@@ -104,6 +109,7 @@ namespace Services.CoinTracking.Models
             {
                 mTradeEndDate = value;
                 this.mSign = null;
+                this.mSignableProperties = null;
             }
         }
     }

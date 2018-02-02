@@ -28,9 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="New Folder\" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
     <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
       <Exec Command="bower install" />

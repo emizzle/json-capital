@@ -5,7 +5,7 @@ using JSONCapital.Data.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Services.Json.Converters
+namespace JSONCapital.Services.Json.Converters
 {
     /// <summary>
     /// Handles converting JSON string values into a C# boolean data type.

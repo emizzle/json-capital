@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Services.CoinTracking
+namespace JSONCapital.Services.CoinTracking
 {
     public class SignablePropertyAttribute : Attribute
     {

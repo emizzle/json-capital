@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>JSONCapital.Services</AssemblyName>
+    <RootNamespace>JSONCapital.Services</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,8 @@
     <Folder Include="Json\" />
     <Folder Include="Json\Converters\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Services.CoinTracking.Models
+namespace JSONCapital.Services.CoinTracking.Models
 {
     /// <summary>
     /// Basic necessities for any CoinTracking.info request model

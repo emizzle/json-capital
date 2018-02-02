@@ -3,33 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using JSONCapital.Common;
 using JSONCapital.Common.Extensions;
 using JSONCapital.Common.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Services.Helpers;
+using JSONCapital.Services.Helpers;
 
-namespace Services.CoinTracking.Models
+namespace JSONCapital.Services.CoinTracking.Models
 {
     public abstract class Request : IRequest
     {
         private readonly IOptions<CoinTrackingOptions> _options;
         protected string mSign = null;
-        private IEnumerable<KeyValuePair<string, object>> mSignableProperties = null;
+        protected IEnumerable<KeyValuePair<string, object>> mSignableProperties = null;
+        private long _nonce;
+        private readonly ILogger _logger;
 
-        public Request(IOptions<CoinTrackingOptions> options)
+        public Request(ILogger<Request> logger, IOptions<CoinTrackingOptions> options)
         {
             _options = options;
+            _nonce = DateTime.Now.Ticks;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Gets the nonce for the request. Must be increasing for each subsequent request.
+        /// </summary>
+        /// <value>The nonce.</value>
         [SignableProperty]
         public long Nonce
         {
             get
-            {
-                return DateTime.Now.Ticks;
+            {  
+                return _nonce;
             }
         }
 
+        /// <summary>
+        /// Gets the CoinTracking.info API method to call.
+        /// </summary>
+        /// <value>The method.</value>
         [SignableProperty]
         public virtual string Method => "not implemented";
 
@@ -51,15 +65,21 @@ namespace Services.CoinTracking.Models
 
                     foreach (var signableProp in this.SignableProperties)
                     {
-                        sb.AppendFormat("{0}={1}&", signableProp.Key.ToLower(), signableProp.Value.ToString().ToLower());
+                        sb.AppendFormat("{0}={1}&", signableProp.Key.ToLower(), signableProp.Value);
                     }
 
-                    mSign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, sb.ToString().TrimEnd('&'));
+                    var strToSign = sb.ToString().TrimEnd('&');
+                    _logger.LogTrace(LoggingEvents.InformationalMarker, null, $"[Request.Sign] Generated form data string for signing: {strToSign}");
+                    mSign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, strToSign);
                 }
                 return mSign;
             }
         }
 
+        /// <summary>
+        /// Gets list of properties on the Request object that are marked with <see cref="SignablePropertyAttribute"/>  
+        /// </summary>
+        /// <value>The signable properties.</value>
         public IEnumerable<KeyValuePair<string, object>> SignableProperties
         {
             get
@@ -78,7 +98,7 @@ namespace Services.CoinTracking.Models
                         {
                             propVal = ((DateTime?)propVal).UnixTimestampFromDateTime();
                         }
-                        if (propVal != null && !propVal.HasDefaultValue())//, default(prop.GetType()))// propVal.Equals(default(typeof(propType)))
+                        if (propVal != null && !propVal.HasDefaultValue())
                         {
                             lstProps.Add(new KeyValuePair<string, object>(prop.Name, propVal));
                         }

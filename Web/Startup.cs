@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using JSONCapital.Common.Options;
+using JSONCapital.Services.Repositories;
 
 namespace JSONCapital.Web
 {
@@ -27,13 +28,19 @@ namespace JSONCapital.Web
             // populate our app settings
             services.Configure<JSONCapitalOptions>(Configuration);
 
+            // db context
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            // repositories
+            services.AddScoped<TradesRepository>();
+
+            // identity services
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            // identity options - configured explicitly
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
@@ -53,6 +60,7 @@ namespace JSONCapital.Web
                 options.User.RequireUniqueEmail = true;
             });
 
+            // cookie options - configured explictly
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -69,9 +77,16 @@ namespace JSONCapital.Web
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            // options via options pattern
             services.Configure<CoinTrackingOptions>(Configuration.GetSection("CoinTracking"));
 
             services.AddMvc();
+
+            //TODO: Add response caching, clear response when data updated?
+            //serviceCollection.AddResponseCaching();
+
+            //TODO: Add Cors?
+            //serviceCollection.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
