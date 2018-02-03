@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using JSONCapital.Data.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace JSONCapital.Services.Json.Converters
+namespace JSONCapital.Data.Json.Converters
 {
     /// <summary>
     /// Handles converting JSON string values into a C# boolean data type.
     /// </summary>
-    public class BooleanConverter : JsonConverter
+    public class TradeConverter : JsonConverter
     {
         #region Overrides of JsonConverter
 
@@ -20,7 +24,7 @@ namespace JSONCapital.Services.Json.Converters
         public override bool CanConvert(Type objectType)
         {
             // Handle only boolean types.
-            return objectType == typeof(bool);
+            return objectType == typeof(IEnumerable<Trade>);
         }
 
         /// <summary>
@@ -35,22 +39,34 @@ namespace JSONCapital.Services.Json.Converters
         /// </returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            switch (reader.Value.ToString().ToLower().Trim())
+            JToken t = JToken.FromObject(reader.Value);
+			
+            var lstTrades = new List<Trade>();
+
+            if (t.Type != JTokenType.Object)
             {
-                case "true":
-                case "yes":
-                case "y":
-                case "1":
-                    return true;
-                case "false":
-                case "no":
-                case "n":
-                case "0":
-                    return false;
+                return lstTrades;
+            }
+            else
+            {
+
+                JObject o = (JObject)t;
+
+                foreach (JObject content in o.Children<JObject>())
+                {
+                    foreach (JProperty prop in content.Properties())
+                    {
+                        // https://stackoverflow.com/questions/21002297/getting-the-name-key-of-a-jtoken-with-json-net
+                        Console.WriteLine(prop.Name);
+                        var trade = prop.Value.ToObject<Trade>(); // deserialize objec in to trade
+                        trade.TradeID = int.Parse(prop.Name); // trade id is the json object property name
+                        lstTrades.Add(trade);
+                    }
+                }
+
             }
 
-            // If we reach here, we're pretty much going to throw an error so let's let Json.NET throw it's pretty-fied error message.
-            return new JsonSerializer().Deserialize(reader, objectType);
+			return lstTrades;
         }
 
         /// <summary>
@@ -64,6 +80,7 @@ namespace JSONCapital.Services.Json.Converters
         /// <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param><param name="value">The value.</param><param name="serializer">The calling serializer.</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            throw new NotImplementedException();
         }
 
         #endregion Overrides of JsonConverter

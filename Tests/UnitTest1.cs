@@ -13,13 +13,15 @@ namespace JSONCapital.Tests
         [Fact]
         public void ParseMockDataFromCoinTrackingApi()
         {
-            var logger = new LoggerFactory().AddConsole().CreateLogger<CoinTracking>();
-            var options = Options.Create<CoinTrackingOptions>(new CoinTrackingOptions(){ ApiEndpoint = "https://a4d0fe25-fcc4-414c-be2d-9dc8008eb23a.mock.pstmn.io", ApiPublicKey = "", ApiPrivateKey = "" });
+            var logger = new LoggerFactory().AddConsole().CreateLogger();
+            var options = Options.Create<CoinTrackingOptions>(new CoinTrackingOptions(){ ApiEndpoint = "https://a4d0fe25-fcc4-414c-be2d-9dc8008eb23a.mock.pstmn.io/api/v1/getTradesSuccess", ApiPublicKey = "", ApiPrivateKey = "" });
             var getTradesRequest = new GetTradesRequest(logger, options);
 
             var coinTrackingRepo = new CoinTrackingRepository(logger, options, getTradesRequest);
 
+            var trades = coinTrackingRepo.DownloadTrades();
 
+            Assert.
         }
     }
 }

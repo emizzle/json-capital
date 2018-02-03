@@ -13,8 +13,6 @@
   <ItemGroup>
     <Folder Include="CoinTracking\" />
     <Folder Include="CoinTracking\Models\" />
-    <Folder Include="Json\" />
-    <Folder Include="Json\Converters\" />
     <Folder Include="Helpers\" />
     <Folder Include="Repositories\" />
     <Folder Include="Exceptions\" />

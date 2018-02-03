@@ -1,6 +1,5 @@
-﻿using System;
+﻿using JSONCapital.Common.Json.Converters;
 using Newtonsoft.Json;
-using JSONCapital.Services.Json.Converters;
 
 namespace JSONCapital.Services.CoinTracking.Models
 {
