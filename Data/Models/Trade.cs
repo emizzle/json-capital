@@ -43,7 +43,7 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The the bought or received amount.</value>
         [JsonProperty("buy_amount")]
-        public float BuyAmount { get; set; }
+        public float? BuyAmount { get; set; }
 
         /// <summary>
         /// Gets or sets the bought or received currency.
@@ -57,7 +57,7 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The sold or withdrawn amount.</value>
         [JsonProperty("sell_amount")]
-        public float SellAmount { get; set; }
+        public float? SellAmount { get; set; }
 
         /// <summary>
         /// Gets or sets the sold or withdrawn currency.
@@ -71,7 +71,7 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The fee amount.</value>
         [JsonProperty("fee_amount")]
-        public float FeeAmount { get; set; }
+        public float? FeeAmount { get; set; }
 
         /// <summary>
         /// Gets or sets the fee currency.
@@ -120,15 +120,16 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The UNIX timestamp of the transaction (UNIX timestamp are always in UTC).</value>
         [JsonProperty("time")]
-        public DateTime Time { get; set; }
+        //[JsonConverter(typeof(DateTimeConverter))]
+        public DateTime? Time { get; set; }
 
         /// <summary>
         /// Gets or sets the UNIX timestamp this transaction was added to CoinTracking.
         /// </summary>
         /// <value>The UNIX timestamp this transaction was added to CoinTracking.</value>
-        [JsonConverter(typeof(DateTimeConverter))]
+        //[JsonConverter(typeof(DateTimeConverter))]
         [JsonProperty("imported_time")]
-        public DateTime ImportedTime { get; set; }
+        public DateTime? ImportedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the trade id of the exchange. Only for imported transactions.

@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using JSONCapital.Common.Options;
 using JSONCapital.Services.Repositories;
+using Newtonsoft.Json;
+using JSONCapital.Services.Json.Converters;
+using JSONCapital.Common.Json.Converters;
 
 namespace JSONCapital.Web
 {
@@ -79,6 +82,15 @@ namespace JSONCapital.Web
 
             // options via options pattern
             services.Configure<CoinTrackingOptions>(Configuration.GetSection("CoinTracking"));
+
+            services.AddScoped<JsonSerializerSettings>((args) =>
+            {
+                var settings = new JsonSerializerSettings();
+                settings.Converters.Add(new BooleanConverter());
+                settings.Converters.Add(new DateTimeConverter());
+                settings.Converters.Add(new GetTradesResponseConverter());
+                return settings;
+            });
 
             services.AddMvc();
 

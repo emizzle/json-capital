@@ -20,8 +20,8 @@ namespace JSONCapital.Common.Json.Converters
         /// </returns>
         public override bool CanConvert(Type objectType)
         {
-            // Handle only boolean types.
-            return objectType == typeof(DateTime);
+            // Handle only DateTime or nullable DateTime types.
+            return objectType.IsAssignableFrom(typeof(DateTime));
         }
 
         /// <summary>
@@ -36,7 +36,13 @@ namespace JSONCapital.Common.Json.Converters
         /// </returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return reader.ReadAsInt32()?.DateTimeFromUnixTimestamp();
+            var stringDate = reader.Value.ToString();
+            int unixDate;
+            if (int.TryParse(stringDate, out unixDate))
+            {
+                return unixDate.DateTimeFromUnixTimestamp();
+            }
+            return null;
         }
 
         /// <summary>

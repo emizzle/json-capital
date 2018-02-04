@@ -20,7 +20,7 @@ namespace JSONCapital.Common.Json.Converters
         public override bool CanConvert(Type objectType)
         {
             // Handle only boolean types.
-            return objectType == typeof(bool);
+            return objectType.IsAssignableFrom(typeof(bool));
         }
 
         /// <summary>

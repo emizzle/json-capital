@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JSONCapital.Common;
 using JSONCapital.Common.Extensions;
+using JSONCapital.Common.Json.Converters;
 using JSONCapital.Common.Options;
 using JSONCapital.Data.Models;
 using JSONCapital.Services.CoinTracking.Models;
@@ -13,6 +14,7 @@ using JSONCapital.Services.Exceptions;
 using JSONCapital.Services.Json.Converters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace JSONCapital.Services.Repositories
 {
@@ -21,15 +23,18 @@ namespace JSONCapital.Services.Repositories
         private readonly ILogger _logger;
         private readonly IOptions<CoinTrackingOptions> _options;
         private readonly GetTradesRequest _getTradesRequest;
+        private readonly JsonSerializerSettings _jsonSzrSettings;
 
         public CoinTrackingRepository(
             ILogger<CoinTrackingRepository> logger,
             IOptions<CoinTrackingOptions> options,
-            GetTradesRequest getTradesRequest)
+            GetTradesRequest getTradesRequest,
+            JsonSerializerSettings jsonSzrSettings)
         {
             _logger = logger;
             _options = options;
             _getTradesRequest = getTradesRequest;
+            _jsonSzrSettings = jsonSzrSettings;
         }
 
         public async Task<IEnumerable<Trade>> DownloadTradesAsync()
@@ -78,7 +83,7 @@ namespace JSONCapital.Services.Repositories
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var responseTyped = await response.Content.ReadAsAsync<GetTradesResponse>(new GetTradesResponseConverter());
+                        var responseTyped = await response.Content.ReadAsAsync<GetTradesResponse>(_jsonSzrSettings);
 
                         if (responseTyped != null && responseTyped.Success)
                         {

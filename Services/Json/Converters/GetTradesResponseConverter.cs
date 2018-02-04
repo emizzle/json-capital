@@ -59,16 +59,18 @@ namespace JSONCapital.Services.Json.Converters
             //JsonConvert.PopulateObject()
             //JObject o = (JObject)t;
 
+			var lstPropsToIgnore = new List<string>() { "success", "method", "error", "error_msg" };
             foreach (var prop in o.Children<JProperty>())
             {
                 //foreach (JProperty prop in content.Properties())
                 //{
                     // https://stackoverflow.com/questions/21002297/getting-the-name-key-of-a-jtoken-with-json-net
                     Console.WriteLine(prop.Name);
-                    var lstPropsToIgnore = new List<string>() { "success", "method", "error", "error_msg" };
                     if (!lstPropsToIgnore.Contains(prop.Name))
                     {
-                        var trade = prop.Value.ToObject<Trade>(); // deserialize object in to trade
+                    var jsonSzrSettings = new JsonSerializerSettings();
+                    jsonSzrSettings.Converters = serializer.Converters;
+                    var trade = JsonConvert.DeserializeObject<Trade>(prop.Value.ToString(), jsonSzrSettings); // deserialize object in to trade
                         if (trade != null)
                         {
                             trade.CoinTrackingTradeID = int.Parse(prop.Name); // trade id is the json object property name

@@ -2,9 +2,12 @@ using System;
 using System.Linq;
 using JSONCapital.Common.Options;
 using JSONCapital.Services.CoinTracking.Models;
+using JSONCapital.Services.Json.Converters;
 using JSONCapital.Services.Repositories;
+using JSONCapital.Common.Json.Converters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace JSONCapital.Tests
@@ -21,9 +24,14 @@ namespace JSONCapital.Tests
             // configure options with mock server endpoint
             var options = Options.Create<CoinTrackingOptions>(new CoinTrackingOptions(){ ApiEndpoint = "https://a4d0fe25-fcc4-414c-be2d-9dc8008eb23a.mock.pstmn.io/api/v1/getTradesSuccess", ApiPublicKey = "", ApiPrivateKey = "" });
 
+            var jsonSzrSettings = new JsonSerializerSettings();
+            jsonSzrSettings.Converters.Add(new BooleanConverter());
+            jsonSzrSettings.Converters.Add(new DateTimeConverter());
+            jsonSzrSettings.Converters.Add(new GetTradesResponseConverter());
+
             var getTradesRequest = new GetTradesRequest(loggerGTR, options);
 
-            var coinTrackingRepo = new CoinTrackingRepository(loggerCTR, options, getTradesRequest);
+            var coinTrackingRepo = new CoinTrackingRepository(loggerCTR, options, getTradesRequest, jsonSzrSettings);
 
             var trades = coinTrackingRepo.DownloadTradesAsync().Result;
 
