@@ -13,5 +13,19 @@ namespace JSONCapital.Common.Extensions
             T value = JsonConvert.DeserializeObject<T>(json);
             return value;
         }
+
+        public static async Task<T> ReadAsAsync<T>(this HttpContent content, params JsonConverter[] converters)
+        {
+            string json = await content.ReadAsStringAsync();
+            T value = JsonConvert.DeserializeObject<T>(json, converters);
+            return value;
+        }
+
+        public static async Task<T> ReadAsAsync<T>(this HttpContent content, JsonSerializerSettings settings)
+        {
+            string json = await content.ReadAsStringAsync();
+            T value = JsonConvert.DeserializeObject<T>(json, settings);
+            return value;
+        }
     }
 }

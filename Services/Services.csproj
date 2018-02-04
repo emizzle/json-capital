@@ -16,6 +16,8 @@
     <Folder Include="Helpers\" />
     <Folder Include="Repositories\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Json\" />
+    <Folder Include="Json\Converters\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

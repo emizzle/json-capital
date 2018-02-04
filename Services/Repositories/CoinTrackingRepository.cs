@@ -10,6 +10,7 @@ using JSONCapital.Common.Options;
 using JSONCapital.Data.Models;
 using JSONCapital.Services.CoinTracking.Models;
 using JSONCapital.Services.Exceptions;
+using JSONCapital.Services.Json.Converters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -77,11 +78,11 @@ namespace JSONCapital.Services.Repositories
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var responseTyped = await response.Content.ReadAsAsync<GetTradesResponse>();
+                        var responseTyped = await response.Content.ReadAsAsync<GetTradesResponse>(new GetTradesResponseConverter());
 
                         if (responseTyped != null && responseTyped.Success)
                         {
-                            _logger.LogInformation(LoggingEvents.WebRequest, null, $"Successfully downloaded {responseTyped.Trades.Count()} trades from the CoinTracking API.");
+                            _logger.LogInformation(LoggingEvents.WebRequest, null, $"Successfully downloaded {responseTyped.Trades?.Count() ?? 0} trades from the CoinTracking API.");
 
                             // return the trade data
                             return responseTyped.Trades;
