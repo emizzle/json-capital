@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>JSONCapital.Common-35D6DE51-A385-4030-B17E-4130A918FC56</UserSecretsId>
     <AssemblyName>JSONCapital.Common</AssemblyName>
     <RootNamespace>JSONCapital.Common</RootNamespace>
   </PropertyGroup>
@@ -10,8 +11,10 @@
     <Folder Include="Options\" />
     <Folder Include="Extensions\" />
     <Folder Include="Json\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
   </ItemGroup>
 </Project>

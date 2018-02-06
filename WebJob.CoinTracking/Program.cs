@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using JSONCapital.Common.Helpers;
 using JSONCapital.Common.Options;
 using JSONCapital.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -60,7 +61,7 @@ namespace JSONCapital.WebJob.CoinTracking
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{GetEnvironmentName()}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{EnvironmentHelper.GetEnvironmentName()}.json", optional: true, reloadOnChange: true)
 				.AddUserSecrets<Program>();
 
             _Configuration = configuration.Build();
@@ -87,7 +88,7 @@ namespace JSONCapital.WebJob.CoinTracking
             serviceCollection.AddScoped<CoinTrackingRepository>();
 
             // hosting
-            serviceCollection.AddSingleton<IHostingEnvironment>((IServiceProvider arg) => new HostingEnvironment() { ContentRootPath = Directory.GetCurrentDirectory(), EnvironmentName = GetEnvironmentName() });
+            serviceCollection.AddSingleton<IHostingEnvironment>((IServiceProvider arg) => new HostingEnvironment() { ContentRootPath = Directory.GetCurrentDirectory(), EnvironmentName = EnvironmentHelper.GetEnvironmentName() });
 
             // logging
             serviceCollection.AddLogging((builder) => builder.AddConfiguration(_Configuration.GetSection("Logging")));
@@ -97,13 +98,5 @@ namespace JSONCapital.WebJob.CoinTracking
 
             return _Configuration;
         }
-
-        private static string GetEnvironmentName()
-        {
-            return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??
-                              Environment.GetEnvironmentVariable("Hosting:Environment") ?? 
-                              Environment.GetEnvironmentVariable("ASPNET_ENV");
-        }
-
     }
 }
