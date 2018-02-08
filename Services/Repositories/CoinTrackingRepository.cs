@@ -25,6 +25,15 @@ namespace JSONCapital.Services.Repositories
         private readonly GetTradesRequest _getTradesRequest;
         private readonly JsonSerializerSettings _jsonSzrSettings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JSONCapital.Services.Repositories.CoinTrackingRepository"/> class. 
+        /// This parameterless constructor is used for test mocking only!
+        /// </summary>
+        public CoinTrackingRepository()
+        {
+            // nothing here - used for testing only
+        }
+
         public CoinTrackingRepository(
             ILogger<CoinTrackingRepository> logger,
             IOptions<CoinTrackingOptions> options,
@@ -37,7 +46,7 @@ namespace JSONCapital.Services.Repositories
             _jsonSzrSettings = jsonSzrSettings;
         }
 
-        public async Task<IEnumerable<Trade>> DownloadTradesAsync()
+        public virtual async Task<IEnumerable<Trade>> DownloadTradesAsync()
         {
             Console.ForegroundColor = ConsoleColor.Green;
             _logger.LogDebug("Entered download trades function.");

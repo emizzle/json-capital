@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JSONCapital.Data;
@@ -39,6 +42,16 @@ namespace JSONCapital.Services.Repositories
         {
             _logger.LogTrace($"Adding trade to database with trade id of {trade.TradeID}");
             await _dbContext.Trades.AddAsync(trade);
+        }
+
+        /// <summary>
+        /// Gets all trade data async.
+        /// </summary>
+        /// <returns>All trade data async.</returns>
+        public async Task<IEnumerable<Trade>> GetAllTradesAsync()
+        {
+            _logger.LogTrace($"Getting all trades from database");
+            return await _dbContext.Trades.ToListAsync();
         }
 
         /// <summary>

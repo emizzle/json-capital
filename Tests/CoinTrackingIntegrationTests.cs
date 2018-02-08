@@ -15,7 +15,7 @@ namespace JSONCapital.Tests
     public class CoinTrackingIntegrationTests
     {
         [Fact]
-        public void ParseMockDataFromCoinTrackingApi()
+        public void CoinTrackingRepository_DownloadTrades_ReturnsTrades()
         {
             var loggerFactory = new LoggerFactory().AddConsole();
             var loggerCTR = loggerFactory.CreateLogger<CoinTrackingRepository>();

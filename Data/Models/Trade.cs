@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using JSONCapital.Common.Json.Converters;
 using Newtonsoft.Json;
 
@@ -30,6 +31,7 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The unique DB trade identifier.</value>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TradeID { get; set; }
 
         /// <summary>
