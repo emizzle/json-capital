@@ -10,7 +10,15 @@ using Microsoft.Extensions.Logging;
 
 namespace JSONCapital.Services.Repositories
 {
-    public class TradesRepository
+    public interface ITradesRepository
+    {
+        Task AddTradeAsync(Trade trade);
+        Task<IEnumerable<Trade>> GetAllTradesAsync();
+        Task InsertTradeAsync(Trade trade);
+        Task SaveChangesAsync();
+    }
+
+    public class TradesRepository : ITradesRepository
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ILogger _logger;

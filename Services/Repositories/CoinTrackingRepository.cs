@@ -18,21 +18,17 @@ using Newtonsoft.Json;
 
 namespace JSONCapital.Services.Repositories
 {
-    public class CoinTrackingRepository
+    public interface ICoinTrackingRepository
+    {
+        Task<IEnumerable<Trade>> DownloadTradesAsync();
+    }
+
+    public class CoinTrackingRepository : ICoinTrackingRepository
     {
         private readonly ILogger _logger;
         private readonly IOptions<CoinTrackingOptions> _options;
         private readonly GetTradesRequest _getTradesRequest;
         private readonly JsonSerializerSettings _jsonSzrSettings;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:JSONCapital.Services.Repositories.CoinTrackingRepository"/> class. 
-        /// This parameterless constructor is used for test mocking only!
-        /// </summary>
-        public CoinTrackingRepository()
-        {
-            // nothing here - used for testing only
-        }
 
         public CoinTrackingRepository(
             ILogger<CoinTrackingRepository> logger,

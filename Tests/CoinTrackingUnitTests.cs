@@ -99,19 +99,16 @@ namespace JSONCapital.Tests
             };
 
             // setup our mock repos to return some fake data in our target method
-            var coinTrackingRepo = new Mock<CoinTrackingRepository>();
+			var loggerFactory = new LoggerFactory().AddConsole();
+			var loggerTR = loggerFactory.CreateLogger<TradesRepository>();
+            var loggerST = loggerFactory.CreateLogger<ScheduledTask>();
+            //var loggerCTR = loggerFactory.CreateLogger<CoinTrackingRepository>();
+
+
+            var coinTrackingRepo = new Mock<ICoinTrackingRepository>();
             coinTrackingRepo
                 .Setup(repo => repo.DownloadTradesAsync())
                 .ReturnsAsync(lstTrades);
-
-
-            //var tradesRepo = new Mock<TradesRepository>();
-            //tradesRepo.Setup(repo => repo.AddTradeAsync(It.IsAny<Trade>()));
-            //tradesRepo.Setup(repo => repo.SaveChangesAsync());
-            //tradesRepo.Setup(repo => repo.GetAllTradesAsync()).ReturnsAsync(lstTrades);
-			var loggerFactory = new LoggerFactory().AddConsole();
-            var loggerTR = loggerFactory.CreateLogger<TradesRepository>();
-			var logger = loggerFactory.CreateLogger<ScheduledTask>();
 
             var mockSet = new Mock<DbSet<Trade>>();
 
@@ -127,7 +124,7 @@ namespace JSONCapital.Tests
 
 
             // create our WebJob.CoinTracking by injecting our mock repository
-            var webJob = new ScheduledTask(logger, tradesRepo, coinTrackingRepo.Object);
+            var webJob = new ScheduledTask(loggerST, tradesRepo, coinTrackingRepo.Object);
 
             // ACT - call our method under test
             var result = webJob.DownloadTrades(null, null);

@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using JSONCapital.Services.CoinTracking.Models;
 using JSONCapital.Services.Repositories;
+using Newtonsoft.Json;
+using JSONCapital.Common.Json.Converters;
+using JSONCapital.Services.Json.Converters;
 
 namespace JSONCapital.WebJob.CoinTracking
 {
@@ -83,9 +86,19 @@ namespace JSONCapital.WebJob.CoinTracking
             serviceCollection.AddDbContext<ApplicationDbContext>(options =>
                                                                  options.UseSqlServer(_Configuration.GetConnectionString("DefaultConnection")));
 
+            // json settings
+            serviceCollection.AddScoped<JsonSerializerSettings>((args) =>
+            {
+                var settings = new JsonSerializerSettings();
+                settings.Converters.Add(new BooleanConverter());
+                settings.Converters.Add(new DateTimeConverter());
+                settings.Converters.Add(new GetTradesResponseConverter());
+                return settings;
+            });
+
             // repositories
-            serviceCollection.AddScoped<TradesRepository>();
-            serviceCollection.AddScoped<CoinTrackingRepository>();
+            serviceCollection.AddScoped<ITradesRepository, TradesRepository>();
+            serviceCollection.AddScoped<ICoinTrackingRepository, CoinTrackingRepository>();
 
             // hosting
             serviceCollection.AddSingleton<IHostingEnvironment>((IServiceProvider arg) => new HostingEnvironment() { ContentRootPath = Directory.GetCurrentDirectory(), EnvironmentName = EnvironmentHelper.GetEnvironmentName() });

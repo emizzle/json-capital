@@ -12,13 +12,13 @@ namespace JSONCapital.WebJob.CoinTracking
     public class ScheduledTask
     {
         private readonly ILogger _logger;
-        private readonly TradesRepository _tradesRepo;
-        private readonly CoinTrackingRepository _coinTrackingRepo;
+        private readonly ITradesRepository _tradesRepo;
+        private readonly ICoinTrackingRepository _coinTrackingRepo;
 
         public ScheduledTask(
             ILogger<ScheduledTask> logger,
-            TradesRepository tradesRepo,
-            CoinTrackingRepository coinTrackingRepo)
+            ITradesRepository tradesRepo,
+            ICoinTrackingRepository coinTrackingRepo)
         {
             _logger = logger;
             _tradesRepo = tradesRepo;
@@ -35,6 +35,7 @@ namespace JSONCapital.WebJob.CoinTracking
                 {
                     foreach (var trade in trades)
                     {
+                        // TODO: Change scheduled task to Upsert trades instead of simply add all.
                         await _tradesRepo.AddTradeAsync(trade);
                     }
                     await _tradesRepo.SaveChangesAsync();

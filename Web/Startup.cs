@@ -36,7 +36,7 @@ namespace JSONCapital.Web
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // repositories
-            services.AddScoped<TradesRepository>();
+            services.AddScoped<ITradesRepository, TradesRepository>();
 
             // identity services
             services.AddIdentity<ApplicationUser, IdentityRole>()
