@@ -81,6 +81,7 @@ namespace JSONCapital.Services.Repositories
                 var logMsg = "";
 
                 var response = await httpClient.SendAsync(request);
+                _getTradesRequest.ClearNonce(); // clear nonce so next request it will be incremented
 
                 try
                 {

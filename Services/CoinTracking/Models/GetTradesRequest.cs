@@ -51,8 +51,8 @@ namespace JSONCapital.Services.CoinTracking.Models
             set
             {
                 mLimit = value;
-                this.mSign = null;
-                this.mSignableProperties = null;
+                this._sign = null;
+                this._signableProperties = null;
             }
         }
 
@@ -70,8 +70,8 @@ namespace JSONCapital.Services.CoinTracking.Models
             set
             {
                 mOrder = value;
-                this.mSign = null;
-                this.mSignableProperties = null;
+                this._sign = null;
+                this._signableProperties = null;
             }
         }
 
@@ -89,8 +89,8 @@ namespace JSONCapital.Services.CoinTracking.Models
             set
             {
                 mTradeStartDate = value;
-                this.mSign = null;
-                this.mSignableProperties = null;
+                this._sign = null;
+                this._signableProperties = null;
             }
         }
 
@@ -108,8 +108,8 @@ namespace JSONCapital.Services.CoinTracking.Models
             set
             {
                 mTradeEndDate = value;
-                this.mSign = null;
-                this.mSignableProperties = null;
+                this._sign = null;
+                this._signableProperties = null;
             }
         }
     }

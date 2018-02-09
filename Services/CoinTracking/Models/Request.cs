@@ -15,15 +15,14 @@ namespace JSONCapital.Services.CoinTracking.Models
     public abstract class Request : IRequest
     {
         private readonly IOptions<CoinTrackingOptions> _options;
-        protected string mSign = null;
-        protected IEnumerable<KeyValuePair<string, object>> mSignableProperties = null;
-        private long _nonce;
+        protected string _sign = null;
+        protected IEnumerable<KeyValuePair<string, object>> _signableProperties = null;
+        private long? _nonce = null;
         private readonly ILogger _logger;
 
         public Request(ILogger<Request> logger, IOptions<CoinTrackingOptions> options)
         {
             _options = options;
-            _nonce = DateTime.Now.Ticks;
             _logger = logger;
         }
 
@@ -36,7 +35,11 @@ namespace JSONCapital.Services.CoinTracking.Models
         {
             get
             {  
-                return _nonce;
+                if(_nonce == null)
+                {
+                    _nonce = DateTime.Now.Ticks;
+                }
+                return _nonce.Value;
             }
         }
 
@@ -59,7 +62,7 @@ namespace JSONCapital.Services.CoinTracking.Models
         {
             get
             {
-                if (mSign == null)
+                if (_sign == null)
                 {
                     var sb = new StringBuilder();
 
@@ -70,9 +73,9 @@ namespace JSONCapital.Services.CoinTracking.Models
 
                     var strToSign = sb.ToString().TrimEnd('&');
                     _logger.LogTrace(LoggingEvents.InformationalMarker, null, $"[Request.Sign] Generated form data string for signing: {strToSign}");
-                    mSign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, strToSign);
+                    _sign = CryptoHelper.SignWithHmacSha512(_options.Value.ApiPrivateKey, strToSign);
                 }
-                return mSign;
+                return _sign;
             }
         }
 
@@ -84,7 +87,7 @@ namespace JSONCapital.Services.CoinTracking.Models
         {
             get
             {
-                if (mSignableProperties == null)
+                if (_signableProperties == null)
                 {
                     var lstProps = new List<KeyValuePair<string, object>>();
                     var props = this.GetType().GetProperties()
@@ -103,10 +106,19 @@ namespace JSONCapital.Services.CoinTracking.Models
                             lstProps.Add(new KeyValuePair<string, object>(prop.Name, propVal));
                         }
                     }
-                    mSignableProperties = lstProps;
+                    _signableProperties = lstProps;
                 }
-                return mSignableProperties;
+                return _signableProperties;
             }
+        }
+
+        /// <summary>
+        /// Resets the nonce backing variable so the next time the nonce is
+        /// retrieved, it is updated.
+        /// </summary>
+        public void ClearNonce()
+        {
+            this._nonce = null;
         }
     }
 }
