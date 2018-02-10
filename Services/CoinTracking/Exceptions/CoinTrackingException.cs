@@ -1,5 +1,5 @@
 ﻿using System;
-namespace JSONCapital.Services.Exceptions
+namespace JSONCapital.Services.CoinTracking.Exceptions
 {
     public class CoinTrackingException : Exception
     {

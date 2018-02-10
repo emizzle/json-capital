@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using JSONCapital.Common.Options;
-using JSONCapital.Services.Repositories;
+using JSONCapital.Data.Repositories;
 using Newtonsoft.Json;
-using JSONCapital.Services.Json.Converters;
+using JSONCapital.Services.CoinTracking.Json.Converters;
 using JSONCapital.Common.Json.Converters;
 
 namespace JSONCapital.Web

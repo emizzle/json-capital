@@ -8,7 +8,11 @@ using JSONCapital.Common.Extensions;
 using JSONCapital.Common.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using JSONCapital.Services.Helpers;
+using JSONCapital.Common.Helpers;
+using System.Net.Http;
+using System.Threading.Tasks;
+using JSONCapital.Services.CoinTracking.Exceptions;
+using Newtonsoft.Json;
 
 namespace JSONCapital.Services.CoinTracking.Models
 {
@@ -19,11 +23,15 @@ namespace JSONCapital.Services.CoinTracking.Models
         protected IEnumerable<KeyValuePair<string, object>> _signableProperties = null;
         private long? _nonce = null;
         private readonly ILogger _logger;
+        private readonly JsonSerializerSettings _jsonSzrSettings;
 
-        public Request(ILogger<Request> logger, IOptions<CoinTrackingOptions> options)
+        public Request(ILogger<Request> logger, 
+                       IOptions<CoinTrackingOptions> options,
+                       JsonSerializerSettings jsonSzrSettings)
         {
             _options = options;
             _logger = logger;
+            _jsonSzrSettings = jsonSzrSettings;
         }
 
         /// <summary>
@@ -50,6 +58,10 @@ namespace JSONCapital.Services.CoinTracking.Models
         [SignableProperty]
         public virtual string Method => "not implemented";
 
+        /// <summary>
+        /// Gets the CoinTracking API public key
+        /// </summary>
+        /// <value>The key.</value>
         public string Key
         {
             get
@@ -58,6 +70,11 @@ namespace JSONCapital.Services.CoinTracking.Models
             }
         }
 
+        /// <summary>
+        /// Gets the result of creating a url key/value pair with all properties marked with 
+        /// <see cref="SignablePropertyAttribute"/> and encrypts it using the private key with HMAC SHA512 encryption.
+        /// </summary>
+        /// <value>The sign.</value>
         public string Sign
         {
             get
@@ -112,13 +129,71 @@ namespace JSONCapital.Services.CoinTracking.Models
             }
         }
 
-        /// <summary>
-        /// Resets the nonce backing variable so the next time the nonce is
-        /// retrieved, it is updated.
-        /// </summary>
-        public void ClearNonce()
+        public async Task<T> SendRequestAsync<T>() where T : Response
         {
-            this._nonce = null;
+            using (var httpClient = new HttpClient())
+            {
+                var sbLogMsg = new StringBuilder("Sending CoinTracking API GetTrades request with following data:");
+                sbLogMsg.AppendLine();
+
+                var formDataContent = new MultipartFormDataContent();
+                foreach (var signableProp in this.SignableProperties)
+                {
+                    var key = signableProp.Key.ToLower();
+                    var val = signableProp.Value.ToString();
+                    formDataContent.Add(new StringContent(val), key);
+
+                    // log kvps that are being sent in request body
+                    sbLogMsg.AppendLine($"{key}: {val}");
+                }
+
+                // create request
+                var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.ApiEndpoint) { Content = formDataContent };
+
+                // add header vals to request
+                request.Headers.Add("Key", this.Key);
+                request.Headers.Add("Sign", this.Sign);
+
+                // log header vals
+                sbLogMsg.AppendLine();
+                sbLogMsg.AppendLine($"Added the following header values:");
+                sbLogMsg.AppendLine($"Key: {this.Key}");
+                sbLogMsg.AppendLine($"Sign: {this.Sign}");
+
+                _logger.LogTrace(sbLogMsg.ToString());
+
+                var logMsg = "";
+
+                var response = await httpClient.SendAsync(request);
+                this._nonce = null; // clear nonce so next request it will be incremented
+
+                try
+                {
+                    _logger.LogInformation(LoggingEvents.WebRequest, null, "CoinTracking API request sent.");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsAsync<T>(_jsonSzrSettings);
+
+
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        logMsg = $"Error sending request ({response.StatusCode} - {response.ReasonPhrase}): {response.Content.ReadAsStringAsync().Result}";
+                        _logger.LogWarning(LoggingEvents.WebRequestError, logMsg);
+                        throw new CoinTrackingException(logMsg);
+                    }
+                }
+                catch (AggregateException aggregateException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    var aggEx = aggregateException.Flatten();
+                    logMsg = $"Error sending request, {aggEx.Message}: {aggEx.StackTrace}";
+                    _logger.LogWarning(LoggingEvents.WebRequestError, logMsg);
+                    throw new CoinTrackingException(logMsg);
+                }
+            }
         }
     }
 }

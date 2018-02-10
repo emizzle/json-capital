@@ -1,30 +1,25 @@
 ﻿using System;
-using System.Linq;
-using JSONCapital.Common.Options;
-using JSONCapital.Services.CoinTracking.Models;
-using JSONCapital.Services.Json.Converters;
-using JSONCapital.Services.Repositories;
-using JSONCapital.Common.Json.Converters;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Xunit;
-using Moq;
 using System.Collections.Generic;
-using JSONCapital.Data.Models;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using JSONCapital.Data;
+using JSONCapital.Data.Models;
+using JSONCapital.Data.Repositories;
+using JSONCapital.Services.CoinTracking.Models;
+using JSONCapital.Tests.Extensions;
 using JSONCapital.WebJob.CoinTracking;
 using Microsoft.EntityFrameworkCore;
-using JSONCapital.Data;
-using System.Threading.Tasks;
-using JSONCapital.Tests.Extensions;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 
 namespace JSONCapital.Tests
 {
     public class CoinTrackingUnitTests
     {
         [Fact]
-        public async Task  InsertTrade_AssumeTrue()
+        public async Task InsertTrade_AssumeTrue()
         {
 
             //var loggerCTR = loggerFactory.CreateLogger<TradesRepository>();
@@ -58,18 +53,17 @@ namespace JSONCapital.Tests
 
             // ARRANGE
             // setup our data
-            var lstTrades = new List<Trade>()
+            var lstTrades = new List<CoinTrackingTrade>()
                     {
-                        new Trade()
+                new CoinTrackingTrade()
                         {
-                            TradeID = 1,
                             BuyAmount = 0.5f,
                             BuyCurrency = "BTC",
                             SellAmount = 900.2f,
                             SellCurrency = "USD",
                             FeeAmount = 4.5f,
                             FeeCurrency = "USD",
-                            TradeType = Trade.TradeTypeEnum.Trade,
+                    TradeType = CoinTrackingTrade.TradeTypeEnum.Trade,
                             Exchange = "Kraken",
                              Group = null,
                             Comment = "This is a Kraken Trade",
@@ -78,16 +72,15 @@ namespace JSONCapital.Tests
                             ImportedTime = DateTime.ParseExact("26/01/2018 16:45:12", "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                             ImportedTradeID = "43250"
                         },
-                        new Trade()
+                new CoinTrackingTrade()
                         {
-                            TradeID = 2,
                             BuyAmount = 1f,
                             BuyCurrency = "BTC",
                             SellAmount = null,
                             SellCurrency = null,
                             FeeAmount = null,
                             FeeCurrency = null,
-                            TradeType = Trade.TradeTypeEnum.Deposit,
+                    TradeType = CoinTrackingTrade.TradeTypeEnum.Deposit,
                             Exchange = "Bittrex",
                              Group = "My Bittrex Deposits",
                             Comment = "This is my Bittrex Deposit",
@@ -99,8 +92,8 @@ namespace JSONCapital.Tests
             };
 
             // setup our mock repos to return some fake data in our target method
-			var loggerFactory = new LoggerFactory().AddConsole();
-			var loggerTR = loggerFactory.CreateLogger<TradesRepository>();
+            var loggerFactory = new LoggerFactory().AddConsole();
+            var loggerTR = loggerFactory.CreateLogger<TradesRepository>();
             var loggerST = loggerFactory.CreateLogger<ScheduledTask>();
             //var loggerCTR = loggerFactory.CreateLogger<CoinTrackingRepository>();
 
@@ -113,11 +106,11 @@ namespace JSONCapital.Tests
             var mockSet = new Mock<DbSet<Trade>>();
 
             // sets up EF to mock async queries
-            mockSet.SetupAsync<Trade>(lstTrades.AsQueryable());
+            mockSet.SetupAsync<Trade>();
 
             var dbContextOptions = new DbContextOptions<ApplicationDbContext>();
             dbContextOptions.Freeze();
-            var mockContext = new Mock<ApplicationDbContext>(dbContextOptions); 
+            var mockContext = new Mock<ApplicationDbContext>(dbContextOptions);
             mockContext.Setup(m => m.Trades).Returns(mockSet.Object);
 
             var tradesRepo = new TradesRepository(mockContext.Object, loggerTR);

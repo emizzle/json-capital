@@ -2,6 +2,7 @@
 using JSONCapital.Common.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace JSONCapital.Services.CoinTracking.Models
 {
@@ -15,8 +16,9 @@ namespace JSONCapital.Services.CoinTracking.Models
         private DateTime? mTradeStartDate;
         private DateTime? mTradeEndDate;
         private readonly ILogger _logger;
+        private readonly JsonSerializerSettings _jsonSzrSettings;
 
-        public GetTradesRequest(ILogger<Request> logger, IOptions<CoinTrackingOptions> options) : base(logger, options)
+        public GetTradesRequest(ILogger<Request> logger, IOptions<CoinTrackingOptions> options, JsonSerializerSettings _jsonSzrSettings) : base(logger, options, _jsonSzrSettings)
         {
             _logger = logger;
         }

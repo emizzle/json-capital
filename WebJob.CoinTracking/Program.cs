@@ -12,10 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using JSONCapital.Services.CoinTracking.Models;
-using JSONCapital.Services.Repositories;
+using JSONCapital.Data.Repositories;
 using Newtonsoft.Json;
 using JSONCapital.Common.Json.Converters;
-using JSONCapital.Services.Json.Converters;
+using JSONCapital.Services.CoinTracking.Json.Converters;
 
 namespace JSONCapital.WebJob.CoinTracking
 {

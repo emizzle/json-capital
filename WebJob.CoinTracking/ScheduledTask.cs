@@ -2,10 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using JSONCapital.Services.Exceptions;
-using JSONCapital.Services.Repositories;
+using JSONCapital.Services.CoinTracking.Exceptions;
+using JSONCapital.Data.Repositories;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using JSONCapital.Data.Models;
 
 namespace JSONCapital.WebJob.CoinTracking
 {
@@ -29,14 +30,32 @@ namespace JSONCapital.WebJob.CoinTracking
         {
             try
             {
-                var trades = await _coinTrackingRepo.DownloadTradesAsync();
+                var coinTrackingTrades = await _coinTrackingRepo.DownloadTradesAsync();
 
-                if (trades != null && trades.Any())
+                if (coinTrackingTrades != null && coinTrackingTrades.Any())
                 {
-                    foreach (var trade in trades)
+                    foreach (var coinTrackingTrade in coinTrackingTrades)
                     {
-                        // TODO: Change scheduled task to Upsert trades instead of simply add all.
-                        await _tradesRepo.AddTradeAsync(trade);
+                        var trade = new Trade()
+                        {
+                            BuyAmount = coinTrackingTrade.BuyAmount,
+                            BuyCurrency = coinTrackingTrade.BuyCurrency,
+                            CoinTrackingTradeID = coinTrackingTrade.CoinTrackingTradeID,
+                            Comment = coinTrackingTrade.Comment,
+                            Exchange = coinTrackingTrade.Exchange,
+                            FeeAmount = coinTrackingTrade.FeeAmount,
+                            FeeCurrency = coinTrackingTrade.FeeCurrency,
+                            Group = coinTrackingTrade.Group,
+                            ImportedFrom = coinTrackingTrade.ImportedFrom,
+                            ImportedTime = coinTrackingTrade.ImportedTime,
+                            ImportedTradeID = coinTrackingTrade.ImportedTradeID,
+                            SellAmount = coinTrackingTrade.SellAmount,
+                            SellCurrency = coinTrackingTrade.SellCurrency,
+                            Time = coinTrackingTrade.Time,
+                            TradeTypeString = coinTrackingTrade.TradeTypeString
+                        };
+
+                        await _tradesRepo.AddOrUpdateTradeAsync(trade);
                     }
                     await _tradesRepo.SaveChangesAsync();
                 }

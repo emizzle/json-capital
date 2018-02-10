@@ -1,10 +1,9 @@
-using System;
 using System.Linq;
-using JSONCapital.Common.Options;
-using JSONCapital.Services.CoinTracking.Models;
-using JSONCapital.Services.Json.Converters;
-using JSONCapital.Services.Repositories;
 using JSONCapital.Common.Json.Converters;
+using JSONCapital.Common.Options;
+using JSONCapital.Services.CoinTracking.Json.Converters;
+using JSONCapital.Services.CoinTracking.Models;
+using JSONCapital.Data.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -29,9 +28,9 @@ namespace JSONCapital.Tests
             jsonSzrSettings.Converters.Add(new DateTimeConverter());
             jsonSzrSettings.Converters.Add(new GetTradesResponseConverter());
 
-            var getTradesRequest = new GetTradesRequest(loggerGTR, options);
+            var getTradesRequest = new GetTradesRequest(loggerGTR, options, jsonSzrSettings);
 
-            var coinTrackingRepo = new CoinTrackingRepository(loggerCTR, options, getTradesRequest, jsonSzrSettings);
+            var coinTrackingRepo = new CoinTrackingRepository(loggerCTR, getTradesRequest);
 
             var trades = coinTrackingRepo.DownloadTradesAsync().Result;
 

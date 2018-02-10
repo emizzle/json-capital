@@ -7,19 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CoinTracking\" />
     <Folder Include="CoinTracking\Models\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Json\" />
-    <Folder Include="Json\Converters\" />
+    <Folder Include="CoinTracking\Exceptions\" />
+    <Folder Include="CoinTracking\Json\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="CoinTracking\Json\.DS_Store" />
   </ItemGroup>
 </Project>

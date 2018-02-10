@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JSONCapital.Data.Models;
 using JSONCapital.Services.CoinTracking.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace JSONCapital.Services.Json.Converters
+namespace JSONCapital.Services.CoinTracking.Json.Converters
 {
     /// <summary>
     /// Handles converting JSON string values into a C# boolean data type.
@@ -46,7 +45,7 @@ namespace JSONCapital.Services.Json.Converters
 
             //JToken t = JToken.FromObject(reader.Value);
 
-            var lstTrades = new List<Trade>();
+            var lstTrades = new List<CoinTrackingTrade>();
             //if (t.Type != JTokenType.Object)
             //{
             //    return null;
@@ -70,7 +69,7 @@ namespace JSONCapital.Services.Json.Converters
                     {
                     var jsonSzrSettings = new JsonSerializerSettings();
                     jsonSzrSettings.Converters = serializer.Converters;
-                    var trade = JsonConvert.DeserializeObject<Trade>(prop.Value.ToString(), jsonSzrSettings); // deserialize object in to trade
+                    var trade = JsonConvert.DeserializeObject<CoinTrackingTrade>(prop.Value.ToString(), jsonSzrSettings); // deserialize object in to trade
                         if (trade != null)
                         {
                             trade.CoinTrackingTradeID = int.Parse(prop.Name); // trade id is the json object property name

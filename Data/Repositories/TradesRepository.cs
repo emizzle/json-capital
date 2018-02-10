@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using JSONCapital.Data;
 using JSONCapital.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace JSONCapital.Services.Repositories
+namespace JSONCapital.Data.Repositories
 {
     public interface ITradesRepository
     {
@@ -16,6 +13,9 @@ namespace JSONCapital.Services.Repositories
         Task<IEnumerable<Trade>> GetAllTradesAsync();
         Task InsertTradeAsync(Trade trade);
         Task SaveChangesAsync();
+        void UpdateTrade(Trade trade);
+        void UpdateTradeNoSave(Trade trade);
+        Task AddOrUpdateTradeAsync(Trade trade);
     }
 
     public class TradesRepository : ITradesRepository
@@ -48,6 +48,36 @@ namespace JSONCapital.Services.Repositories
         /// <param name="trade">Trade.</param>
         public async Task AddTradeAsync(Trade trade)
         {
+            _logger.LogTrace($"Adding trade to database with trade id of {trade.TradeID}");
+            await _dbContext.Trades.AddAsync(trade);
+        }
+
+        public void UpdateTrade(Trade trade)
+        {
+            _logger.LogTrace($"Updating trade in database with trade id of {trade.TradeID}");
+            _dbContext.Trades.Update(trade);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateTradeNoSave(Trade trade)
+        {
+            _logger.LogTrace($"Updating trade in database with trade id of {trade.TradeID}");
+            _dbContext.Trades.Update(trade);
+        }
+
+        public async Task AddOrUpdateTradeAsync(Trade trade)
+        {
+            var existingTrade = await _dbContext.Trades.FindAsync(trade.CoinTrackingTradeID);
+            if(existingTrade != null)
+            {
+                _logger.LogTrace($"Updating trade in database with trade id of {trade.TradeID}");
+                trade.TradeID = existingTrade.TradeID;
+                UpdateTradeNoSave(trade);
+            }
+            else
+            {
+                await AddTradeAsync(trade);
+            }
             _logger.LogTrace($"Adding trade to database with trade id of {trade.TradeID}");
             await _dbContext.Trades.AddAsync(trade);
         }
