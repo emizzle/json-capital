@@ -81,16 +81,6 @@ namespace JSONCapital.Web
             services.AddTransient<IEmailSender, EmailSender>();
 
             // options via options pattern
-            services.Configure<CoinTrackingOptions>(Configuration.GetSection("CoinTracking"));
-
-            services.AddScoped<JsonSerializerSettings>((args) =>
-            {
-                var settings = new JsonSerializerSettings();
-                settings.Converters.Add(new BooleanConverter());
-                settings.Converters.Add(new DateTimeConverter());
-                settings.Converters.Add(new GetTradesResponseConverter());
-                return settings;
-            });
 
             services.AddMvc();
 

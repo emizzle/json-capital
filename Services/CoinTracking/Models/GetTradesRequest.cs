@@ -16,7 +16,6 @@ namespace JSONCapital.Services.CoinTracking.Models
         private DateTime? mTradeStartDate;
         private DateTime? mTradeEndDate;
         private readonly ILogger _logger;
-        private readonly JsonSerializerSettings _jsonSzrSettings;
 
         public GetTradesRequest(ILogger<Request> logger, IOptions<CoinTrackingOptions> options, JsonSerializerSettings _jsonSzrSettings) : base(logger, options, _jsonSzrSettings)
         {

@@ -7,6 +7,7 @@ using JSONCapital.Data.Repositories;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using JSONCapital.Data.Models;
+using JSONCapital.Common.Extensions;
 
 namespace JSONCapital.WebJob.CoinTracking
 {
@@ -26,7 +27,14 @@ namespace JSONCapital.WebJob.CoinTracking
             _coinTrackingRepo = coinTrackingRepo;
         }
 
-        public async Task DownloadTrades([TimerTrigger("0 0 * * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
+        /// <summary>
+        /// Downloads the trades from the CoinTracking API, persists the necessary data in to the DB, then
+        /// deletes any data that did not exist in the import (sync operation).
+        /// </summary>
+        /// <returns>The trades.</returns>
+        /// <param name="timerInfo">Timer info. {second} {minute} {hour} {day} {month} {day of the week}, more info at <see cref="https://codehollow.com/2017/02/azure-functions-time-trigger-cron-cheat-sheet/"/></param>
+        /// <param name="log">Log.</param>
+        public async Task SyncTradesAsync([TimerTrigger("0 */5 * * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
             try
             {
@@ -34,8 +42,11 @@ namespace JSONCapital.WebJob.CoinTracking
 
                 if (coinTrackingTrades != null && coinTrackingTrades.Any())
                 {
+                    var existingCoinTrackingTradeIds = _tradesRepo.GetAllCoinTrackingTradeIds();
+
                     foreach (var coinTrackingTrade in coinTrackingTrades)
                     {
+                        // convert CoinTrackingTrade to a Trade model we will persist
                         var trade = new Trade()
                         {
                             BuyAmount = coinTrackingTrade.BuyAmount,
@@ -52,11 +63,22 @@ namespace JSONCapital.WebJob.CoinTracking
                             SellAmount = coinTrackingTrade.SellAmount,
                             SellCurrency = coinTrackingTrade.SellCurrency,
                             Time = coinTrackingTrade.Time,
-                            TradeTypeString = coinTrackingTrade.TradeTypeString
+                            TradeType = coinTrackingTrade.TradeType.ToString().ParseEnum<Trade.TradeTypeEnum>()
                         };
 
-                        await _tradesRepo.AddOrUpdateTradeAsync(trade);
+                        await _tradesRepo.AddOrUpdateTradeNoSaveAsync(trade);
                     }
+
+                    // save changes to the context
+                    await _tradesRepo.SaveChangesAsync();
+
+                    // find all coinTrackingIds that exist in DB but not in downloaded list
+                    var coinTrackingTradeIdsToDelete = existingCoinTrackingTradeIds.Except(coinTrackingTrades.Select(ctt => ctt.CoinTrackingTradeID));
+
+                    // delete them from the context
+                    await _tradesRepo.DeleteTradesNoSaveAsync(coinTrackingTradeIdsToDelete);
+
+                    // save changes to the context
                     await _tradesRepo.SaveChangesAsync();
                 }
             }

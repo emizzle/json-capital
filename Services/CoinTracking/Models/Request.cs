@@ -166,6 +166,8 @@ namespace JSONCapital.Services.CoinTracking.Models
 
                 var response = await httpClient.SendAsync(request);
                 this._nonce = null; // clear nonce so next request it will be incremented
+                this._signableProperties = null;
+                this._sign = null;
 
                 try
                 {

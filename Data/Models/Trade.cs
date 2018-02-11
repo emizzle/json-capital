@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using JSONCapital.Common.Extensions;
 using JSONCapital.Common.Json.Converters;
 using Newtonsoft.Json;
@@ -15,7 +16,6 @@ namespace JSONCapital.Data.Models
         }
 
         //TODO: test that this can be parsed and serialized as a string
-        [JsonConverter(typeof(StringEnumConverter))]
         public enum TradeTypeEnum
         {
             Trade,
@@ -23,9 +23,11 @@ namespace JSONCapital.Data.Models
             Withdrawal,
             Income,
             Mining,
+            [EnumMember(Value = "Gift/Tip(In)")]
             Gift_Or_Tip__In,
             Spend,
             Donation,
+            [EnumMember(Value = "Gift(Out)")]
             Gift__Out,
             Stolen,
             Lost
@@ -43,7 +45,6 @@ namespace JSONCapital.Data.Models
         /// Gets or sets the the unique CoinTracking transaction id.
         /// </summary>
         /// <value>The unique CoinTracking transaction id.</value>
-        [Key]
         public int CoinTrackingTradeID { get; set; }
 
         /// <summary>
@@ -87,6 +88,7 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The type of the trade.</value>
         [NotMapped]
+        [JsonIgnore]
         public TradeTypeEnum TradeType { get; set; }
 
         /// <summary>
@@ -94,9 +96,10 @@ namespace JSONCapital.Data.Models
         /// </summary>
         /// <value>The trade type string.</value>
         [Column("TradeType")]
+        [JsonProperty("tradeType")]
         public string TradeTypeString
         {
-            get { return TradeType.ToString(); }
+            get { return TradeType.GetAttribute<EnumMemberAttribute>()?.Value ?? TradeType.ToString(); }
             set { TradeType = value.ParseEnum<TradeTypeEnum>(); }
         }
 

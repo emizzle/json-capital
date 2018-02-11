@@ -81,10 +81,15 @@ namespace JSONCapital.WebJob.CoinTracking
             // web job - required to be DI-ed up
             serviceCollection.AddScoped<ScheduledTask>();
 
+            // hosting
+            var hostingEnv = new HostingEnvironment() { ContentRootPath = Directory.GetCurrentDirectory(), EnvironmentName = EnvironmentHelper.GetEnvironmentName() };
+            serviceCollection.AddSingleton<IHostingEnvironment>((IServiceProvider arg) => hostingEnv);
+			
 
             // db context
             serviceCollection.AddDbContext<ApplicationDbContext>(options =>
-                                                                 options.UseSqlServer(_Configuration.GetConnectionString("DefaultConnection")));
+                                                                 options.UseSqlServer(_Configuration.GetConnectionString("DefaultConnection"))
+                                                                 .EnableSensitiveDataLogging(hostingEnv.IsDevelopment()));
 
             // json settings
             serviceCollection.AddScoped<JsonSerializerSettings>((args) =>
@@ -99,9 +104,6 @@ namespace JSONCapital.WebJob.CoinTracking
             // repositories
             serviceCollection.AddScoped<ITradesRepository, TradesRepository>();
             serviceCollection.AddScoped<ICoinTrackingRepository, CoinTrackingRepository>();
-
-            // hosting
-            serviceCollection.AddSingleton<IHostingEnvironment>((IServiceProvider arg) => new HostingEnvironment() { ContentRootPath = Directory.GetCurrentDirectory(), EnvironmentName = EnvironmentHelper.GetEnvironmentName() });
 
             // logging
             serviceCollection.AddLogging((builder) => builder.AddConfiguration(_Configuration.GetSection("Logging")));

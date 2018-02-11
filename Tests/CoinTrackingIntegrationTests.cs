@@ -37,6 +37,7 @@ namespace JSONCapital.Tests
             Assert.NotNull(trades);
             Assert.NotEmpty(trades);
             Assert.True(trades.All(t => t.CoinTrackingTradeID > 0));
+            Assert.NotNull(trades.FirstOrDefault(t => t.CoinTrackingTradeID == 574026 && t.TradeType == CoinTrackingTrade.TradeTypeEnum.Gift_Or_Tip__In));
         }
     }
 }

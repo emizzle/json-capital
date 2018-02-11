@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using JSONCapital.Common.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace JSONCapital.Services.CoinTracking.Models
 {
@@ -15,9 +17,11 @@ namespace JSONCapital.Services.CoinTracking.Models
             Withdrawal,
             Income,
             Mining,
+            [EnumMember(Value = "Gift/Tip(In)")]
             Gift_Or_Tip__In,
             Spend,
             Donation,
+            [EnumMember(Value = "Gift(Out)")]
             Gift__Out,
             Stolen,
             Lost
@@ -76,20 +80,9 @@ namespace JSONCapital.Services.CoinTracking.Models
         /// Gets or sets the type of the trade.
         /// </summary>
         /// <value>The type of the trade.</value>
-        [NotMapped]
-        public TradeTypeEnum TradeType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the trade type via it's string value.
-        /// </summary>
-        /// <value>The trade type string.</value>
-        [Column("TradeType")]
         [JsonProperty("type")]
-        public string TradeTypeString
-        {
-            get { return TradeType.ToString(); }
-            set { TradeType = value.ParseEnum<TradeTypeEnum>(); }
-        }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public TradeTypeEnum TradeType { get; set; }
 
         /// <summary>
         /// Gets or sets the exchange set on CoinTracking.
